@@ -91,4 +91,18 @@ class DumperTest < Minitest::Test
 
     assert_equal toml, dumped
   end
+
+  def test_dump_multiline_strings_tables
+    hash = { quote: { shakespeare: "To be, or not to be:\n  that is the question" } }
+
+    dumped = TomlRB.dump(hash, prefer_multiline_strings: true)
+    toml = <<-EOS.gsub(/^ {6}/, '')
+      [quote]
+      shakespeare = """
+      To be, or not to be:
+        That is the question"""
+    EOS
+
+    assert_equal toml, dumped
+  end
 end

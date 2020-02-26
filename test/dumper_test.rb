@@ -100,7 +100,7 @@ class DumperTest < Minitest::Test
       [quote]
       shakespeare = """
       To be, or not to be:
-        That is the question"""
+        that is the question"""
     EOS
 
     assert_equal toml, dumped

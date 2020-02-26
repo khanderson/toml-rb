@@ -1,3 +1,5 @@
+require 'pry'
+
 module TomlRB
   class Dumper
     attr_reader :toml_str
@@ -89,7 +91,7 @@ module TomlRB
       if obj.is_a? Time
         obj.strftime('%Y-%m-%dT%H:%M:%SZ')
       else
-        if prefer_multiline_strings? && (obj.is_a?(String) && obj.include?('\n'))
+        if prefer_multiline_strings? && (obj.is_a?(String) && obj.include?("\n"))
           "\"\"\"\n#{obj}\"\"\""
         else
           obj.inspect

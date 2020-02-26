@@ -94,7 +94,7 @@ module TomlRB
   #
   #
   # Returns a TomlRB string representing the hash.
-  def self.dump(hash)
-    Dumper.new(hash).toml_str
+  def self.dump(hash, options = {})
+    Dumper.new(hash, options).toml_str
   end
 end

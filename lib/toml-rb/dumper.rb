@@ -2,8 +2,9 @@ module TomlRB
   class Dumper
     attr_reader :toml_str
 
-    def initialize(hash)
+    def initialize(hash, options = {})
       @toml_str = ''
+      @prefer_multiline_strings = options[:prefer_multiline_strings]
 
       visit(hash, [])
     end
@@ -88,7 +89,11 @@ module TomlRB
       if obj.is_a? Time
         obj.strftime('%Y-%m-%dT%H:%M:%SZ')
       else
-        obj.inspect
+        if prefer_multiline_strings? && (obj.is_a?(String) && obj.include?('\n'))
+          "\"\"\"\n#{obj}\"\"\""
+        else
+          obj.inspect
+        end
       end
     end
 
@@ -98,6 +103,10 @@ module TomlRB
 
     def quote_key(key)
       '"' + key.gsub('"', '\\"') + '"'
+    end
+
+    def prefer_multiline_strings?
+      @prefer_multiline_strings
     end
   end
 end

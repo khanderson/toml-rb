@@ -1,0 +1,5 @@
+{
+	"shakespeare": "To be, or not to be:\n  that is the question",
+	"with_special_chars": "\\tThe quick brown fox\njumps over\\\\ the lazy dog.",
+	"single_double_triple_quotes": "\"I like single\"\n\"\"and double\"\"\nand triple \"\"\\\"quotes in strings\"\"\\\""
+}

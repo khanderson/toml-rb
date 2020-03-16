@@ -90,6 +90,10 @@ module TomlRB
         obj.strftime('%Y-%m-%dT%H:%M:%SZ')
       else
         if prefer_multiline_strings? && (obj.is_a?(String) && obj.include?("\n"))
+          obj = obj.lines.map { |line| line.chomp
+                                            .inspect[1...-1]
+                                            .gsub(%q[\"], %q["])
+                                            .gsub(%q["""], %q[""\"]) }.join("\n")
           "\"\"\"\n#{obj}\"\"\""
         else
           obj.inspect

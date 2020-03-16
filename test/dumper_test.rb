@@ -92,7 +92,7 @@ class DumperTest < Minitest::Test
     assert_equal toml, dumped
   end
 
-  def test_dump_multiline_strings_tables
+  def test_dump_multiline_string_tables
     hash = { quote: { shakespeare: "To be, or not to be:\n  that is the question" } }
 
     dumped = TomlRB.dump(hash, prefer_multiline_strings: true)
@@ -101,6 +101,35 @@ class DumperTest < Minitest::Test
       shakespeare = """
       To be, or not to be:
         that is the question"""
+    EOS
+
+    assert_equal toml, dumped
+  end
+
+  def test_dump_multiline_string_with_special_chars_tables
+    hash = { multiline_string: { with_special_chars: "\tThe quick brown fox\njumps over\\ the lazy dog." } }
+
+    dumped = TomlRB.dump(hash, prefer_multiline_strings: true)
+    toml = <<-EOS.gsub(/^ {6}/, '')
+      [multiline_string]
+      with_special_chars = """
+      \\tThe quick brown fox
+      jumps over\\\\ the lazy dog."""
+    EOS
+
+    assert_equal toml, dumped
+  end
+
+  def test_dump_multiline_string_with_single_double_and_triple_quote_marks
+    hash = { multiline_string: { single_double_triple_quotes: "\"I like single\"\n\"\"and double\"\"\nand triple \"\"\"quotes in strings\"\"\"" } }
+
+    dumped = TomlRB.dump(hash, prefer_multiline_strings: true)
+    toml = <<-EOS.gsub(/^ {6}/, '')
+      [multiline_string]
+      single_double_triple_quotes = """
+      "I like single"
+      ""and double""
+      and triple ""\\"quotes in strings""\\""""
     EOS
 
     assert_equal toml, dumped

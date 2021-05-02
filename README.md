@@ -4,11 +4,11 @@ toml-rb
 [![Gem Version](https://badge.fury.io/rb/toml-rb.svg)](http://badge.fury.io/rb/toml-rb)
 [![Build Status](https://travis-ci.org/emancu/toml-rb.svg)](https://travis-ci.org/emancu/toml-rb)
 [![Code Climate](https://codeclimate.com/github/emancu/toml-rb/badges/gpa.svg)](https://codeclimate.com/github/emancu/toml-rb)
-[![Dependency Status](https://gemnasium.com/emancu/toml-rb.svg)](https://gemnasium.com/emancu/toml-rb)
+[![RubyGem](https://img.shields.io/gem/dt/toml-rb.svg)](https://rubygems.org/gems/toml-rb)
 
-A [TomlRB](https://github.com/toml-lang/toml) parser using [Citrus](http://mjackson.github.io/citrus) library.
+A [TOML](https://github.com/toml-lang/toml) parser using [Citrus](http://mjackson.github.io/citrus) library.
 
-TomlRB specs supported: `0.4.0`
+TOML specs supported: `0.5.0`
 
 Installation
 ------------

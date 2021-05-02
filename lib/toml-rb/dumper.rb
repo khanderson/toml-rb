@@ -1,3 +1,5 @@
+require 'date'
+
 module TomlRB
   class Dumper
     attr_reader :toml_str
@@ -86,18 +88,23 @@ module TomlRB
     end
 
     def to_toml(obj)
-      if obj.is_a? Time
+      if obj.is_a?(Time) || obj.is_a?(DateTime)
         obj.strftime('%Y-%m-%dT%H:%M:%SZ')
-      else
-        if prefer_multiline_strings? && (obj.is_a?(String) && obj.include?("\n"))
-          obj = obj.lines.map { |line| line.chomp
-                                            .inspect[1...-1]
-                                            .gsub(%q[\"], %q["])
-                                            .gsub(%q["""], %q[""\"]) }.join("\n")
-          "\"\"\"\n#{obj}\"\"\""
+      elsif obj.is_a?(Date)
+        obj.strftime('%Y-%m-%d')
+      elsif obj.is_a? Regexp
+        obj.inspect.inspect
+      elsif obj.is_a? String
+        str = obj.inspect.gsub(/\\(#[$@{])/, '\1')
+
+        if prefer_multiline_strings? && str.include?('\\n')
+          str = str[1..-2].gsub(/\\"/, '"').gsub(/"""/, '""\\"').gsub(/\\n/, "\n")
+          %Q["""\n#{str}"""]
         else
-          obj.inspect
+          str
         end
+      else
+        obj.inspect
       end
     end
 
@@ -110,7 +117,7 @@ module TomlRB
     end
 
     def prefer_multiline_strings?
-      @prefer_multiline_strings
+      !!@prefer_multiline_strings
     end
   end
 end

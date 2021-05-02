@@ -73,6 +73,25 @@ class DumperTest < Minitest::Test
     assert_equal("[[hola]]\nchau = 4\n[[hola]]\nchau = 3\n", dumped)
   end
 
+  def test_sorting_of_hash_keys_in_dump
+    hash_ab = { a: 1, b: 2 }
+    hash_ba = { b: 2, a: 1 }
+
+    # Check assumption that Hash order is preserved.
+    assert_equal %i[a b], hash_ab.keys
+    assert_equal %i[b a], hash_ba.keys
+
+    # For Hashes whose keys are in order, sort_hash_keys makes no difference.
+    assert_equal("a = 1\nb = 2\n", TomlRB.dump(hash_ab))
+    assert_equal("a = 1\nb = 2\n", TomlRB.dump(hash_ab, sort_hash_keys: true))
+    assert_equal("a = 1\nb = 2\n", TomlRB.dump(hash_ab, sort_hash_keys: false))
+
+    # Passing sort_hash_keys: false preserves the Hash's order.
+    assert_equal("a = 1\nb = 2\n", TomlRB.dump(hash_ba))
+    assert_equal("a = 1\nb = 2\n", TomlRB.dump(hash_ba, sort_hash_keys: true))
+    assert_equal("b = 2\na = 1\n", TomlRB.dump(hash_ba, sort_hash_keys: false))
+  end
+
   def test_print_empty_tables
     hash = { plugins: { cpu: { foo: "bar", baz: 1234 }, disk: {}, io: {} } }
     dumped = TomlRB.dump(hash)

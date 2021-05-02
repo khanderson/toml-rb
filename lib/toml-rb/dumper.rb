@@ -7,6 +7,7 @@ module TomlRB
     def initialize(hash, options = {})
       @toml_str = ''
       @prefer_multiline_strings = options[:prefer_multiline_strings]
+      @sort_hash_keys = options.fetch(:sort_hash_keys, true)
 
       visit(hash, [])
     end
@@ -28,7 +29,9 @@ module TomlRB
       simple_pairs = []
       table_array_pairs = []
 
-      hash.keys.sort.each do |key|
+      ordered_keys = sort_hash_keys? ? hash.keys.sort : hash.keys
+
+      ordered_keys.each do |key|
         val = hash[key]
         element = [key, val]
 
@@ -118,6 +121,10 @@ module TomlRB
 
     def prefer_multiline_strings?
       !!@prefer_multiline_strings
+    end
+
+    def sort_hash_keys?
+      @sort_hash_keys
     end
   end
 end

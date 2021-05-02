@@ -4,8 +4,9 @@ module TomlRB
   class Dumper
     attr_reader :toml_str
 
-    def initialize(hash)
+    def initialize(hash, options = {})
       @toml_str = ''
+      @prefer_multiline_strings = options[:prefer_multiline_strings]
 
       visit(hash, [])
     end
@@ -94,7 +95,14 @@ module TomlRB
       elsif obj.is_a? Regexp
         obj.inspect.inspect
       elsif obj.is_a? String
-        obj.inspect.gsub(/\\(#[$@{])/, '\1')
+        str = obj.inspect.gsub(/\\(#[$@{])/, '\1')
+
+        if prefer_multiline_strings? && str.include?('\\n')
+          str = str[1..-2].gsub(/\\"/, '"').gsub(/"""/, '""\\"').gsub(/\\n/, "\n")
+          %Q["""\n#{str}"""]
+        else
+          str
+        end
       else
         obj.inspect
       end
@@ -106,6 +114,10 @@ module TomlRB
 
     def quote_key(key)
       '"' + key.gsub('"', '\\"') + '"'
+    end
+
+    def prefer_multiline_strings?
+      !!@prefer_multiline_strings
     end
   end
 end

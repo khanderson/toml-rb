@@ -1,0 +1,12 @@
+shakespeare = """
+To be, or not to be:
+  that is the question"""
+
+with_special_chars = """
+\\tThe quick brown fox
+jumps over\\\\ the lazy dog."""
+
+single_double_triple_quotes = """
+"I like single"
+""and double""
+and triple ""\\"quotes in strings""\\""""

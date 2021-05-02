@@ -124,7 +124,7 @@ module TomlRB
     end
 
     def sort_hash_keys?
-      @sort_hash_keys
+      !!@sort_hash_keys
     end
   end
 end

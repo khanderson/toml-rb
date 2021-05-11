@@ -98,13 +98,24 @@ module TomlRB
       elsif obj.is_a? Regexp
         obj.inspect.inspect
       elsif obj.is_a? String
-        str = obj.inspect.gsub(/\\(#[$@{])/, '\1')
+        if prefer_multiline_strings? && obj.include?("\n")
+          # Newlines and " are special here.  It's safer to split on
+          # both and work on the remaining fragments than to use
+          # obj.inspect.gsub(), because after #inspect, it's hard to
+          # find backslash+" or backslash+n without also finding
+          # backslash+backslash+" etc, you end up needing a full parse.
 
-        if prefer_multiline_strings? && str.include?('\\n')
-          str = str[1..-2].gsub(/\\"/, '"').gsub(/"""/, '""\\"').gsub(/\\n/, "\n")
-          %Q["""\n#{str}"""]
+          lines = obj.split("\n", -1).map do |line|
+            line.split('"', -1).map do |fragment|
+              fragment.inspect.gsub(/\\(#[$@{])/, '\1')[1..-2]
+            end.join('"')
+          end
+
+          # Escape any embedded occurances of """ as ""\".
+          bookend = '"""'
+          "#{bookend}\n#{lines.join("\n").gsub(bookend, '""\\"')}#{bookend}"
         else
-          str
+          obj.inspect.gsub(/\\(#[$@{])/, '\1')
         end
       else
         obj.inspect

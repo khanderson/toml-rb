@@ -121,6 +121,30 @@ class DumperTest < Minitest::Test
     assert_equal toml, dumped
   end
 
+  def test_dump_multiline_string_containing_newlines
+    hash = { address: "1 Main St\nSmallville" }
+    dumped = TomlRB.dump(hash, prefer_multiline_strings: true)
+    toml = <<-EOS.gsub(/^ {6}/, '')
+      address = """
+      1 Main St
+      Smallville"""
+    EOS
+
+    assert_equal toml, dumped
+  end
+
+  def test_dump_multiline_string_containing_escaped_newlines
+    hash = { address: "Line 1\\nStill line 1, since that was a backslash and an 'n', not a newline\nLine 2." }
+    dumped = TomlRB.dump(hash, prefer_multiline_strings: true)
+    toml = <<-EOS.gsub(/^ {6}/, '')
+      address = """
+      Line 1\\\\nStill line 1, since that was a backslash and an 'n', not a newline
+      Line 2."""
+    EOS
+
+    assert_equal toml, dumped
+  end
+
   def test_dump_multiline_string_tables
     hash = { quote: { shakespeare: "To be, or not to be:\n  that is the question" } }
 
